@@ -71,4 +71,52 @@ order_form = bakeryOrder(root)
 # Run main loop
 root.mainloop()
 
-        
+#Validation testing
+import unittest
+import tkinter as tk
+from tkinter import messagebox
+from unittest.mock import patch
+
+class TestBakeryOrder(unittest.TestCase):
+    def setUp(self):
+        self.root = tk.Tk()
+        self.order_form = bakeryOrder(self.root)
+        self.app = self.order_form.master
+
+    def tearDown(self):
+        self.root.destroy()
+
+    @patch('tkinter.messagebox.showinfo')
+    def test_calculate_total(self, mock_showinfo):
+        # Mock input values
+        self.order_form.lemon_meringue_ent.insert(0, "2")
+        self.order_form.strawberry_shortcake_ent.insert(0, "3")
+        self.order_form.chocolatechip_cookies_ent.insert(0, "4")
+        self.order_form.frosted_cupcakes_ent.insert(0, "1")
+        self.order_form.chocolate_croissants_ent.insert(0, "2")
+        self.order_form.apple_fritters_ent.insert(0, "1")
+
+        # Call calculate_total method
+        self.order_form.calculate_total()
+
+        # Assert that the mock showinfo method was called with the correct arguments
+        mock_showinfo.assert_called_with("Total Price", "Your total bill is $47.34")
+
+    @patch('tkinter.messagebox.showerror')
+    def test_invalid_input(self, mock_showerror):
+        # Mock invalid input values (non-integer)
+        self.order_form.lemon_meringue_ent.insert(0, "invalid")
+        self.order_form.strawberry_shortcake_ent.insert(0, "3")
+        self.order_form.chocolatechip_cookies_ent.insert(0, "4")
+        self.order_form.frosted_cupcakes_ent.insert(0, "1")
+        self.order_form.chocolate_croissants_ent.insert(0, "2")
+        self.order_form.apple_fritters_ent.insert(0, "1")
+
+        # Call calculate_total method
+        self.order_form.calculate_total()
+
+        # Assert that the mock showerror method was called with the correct arguments
+        mock_showerror.assert_called_with("Invalid Input", "Please enter a valid integer for each item.")
+
+if __name__ == '__main__':
+    unittest.main()        
